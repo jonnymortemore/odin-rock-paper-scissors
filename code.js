@@ -1,12 +1,21 @@
-const SCISSORS = "scissors"
-const ROCK = "rock"
-const PAPER = "paper"
+const SCISSORS = "scissors";
+const ROCK = "rock";
+const PAPER = "paper";
+const FINALSCORE = 5;
+let round = 1;
 let humanScore = 0;
 let computerScore = 0;
 
 
 console.log("Play Rock, Paper, Scissors!")
-playGame()
+
+const buttons = document.querySelectorAll("button")
+const outcome = document.querySelector('#outcome')
+
+buttons.forEach((button) => {
+    button.addEventListener('click', () => {
+        playGame(button.id)})
+})
 
 function getComputerChoice() {
     let value = Math.random();
@@ -23,30 +32,11 @@ function getComputerChoice() {
     return choice
 }
 
-function getUserChoice() {
-    let choiceMade = false;
-    let choice = ""
-    while (!choiceMade) {
-        choice = window.prompt("Pick rock, paper, scissors!");
-        choice.trim();
-        choice.toLowerCase();
-        if ([ROCK, PAPER, SCISSORS].includes(choice)) {
-            choiceMade = true;
-        }
-        else {
-            console.log(
-                "Oops, that's not one of the choices!"
-            )
-        }
-    }
-    
-    return choice;
-}
-
 function playerRound(playerMove, computerMove) {
     let winner = true;
+    round += 1;
     if (playerMove === computerMove) {
-        console.log(`Draw! Computer also played ${playerMove}`);
+        outcome.innerText = `Draw! Computer also played ${playerMove}`;
         return
     }
     else if (playerMove === ROCK) {
@@ -82,29 +72,25 @@ function playerRound(playerMove, computerMove) {
     }
 
     if (winner) {
-        console.log(`You win! ${playerMove} beats ${computerMove}`);
+        outcome.innerText = `You win! ${playerMove} beats ${computerMove}`;
     } else {
-        console.log(`You lose! ${computerMove} beats ${playerMove}`);
+        outcome.innerText = `You lose! ${computerMove} beats ${playerMove}`;
     }
 }
 
-function playGame() {
-    const roundTotal = 5;
+function playGame(playerChoice) {
+    const roundTracker = document.querySelector('#round-tracker');
+    const pcScore = document.querySelector("#pc-score");
+    const yourScore = document.querySelector("#your-score");
+    roundTracker.innerText = "Round: " + round;
+    playerRound(playerChoice, getComputerChoice());
+    yourScore.innerText = `You: ${humanScore}`;
+    pcScore.innerText = `Computer: ${computerScore}`;
 
-    for (let round = 1; round <= roundTotal; round++) {
-        console.log("Round " + round)
-        playerRound(getUserChoice(), getComputerChoice())
-        console.log(`You: ${humanScore}`)
-        console.log(`Computer: ${computerScore}`)
+    if (humanScore == FINALSCORE) {
+        outcome.innerText = "You win!";
     }
-
-    if (humanScore > computerScore) {
-        console.log("You win!")
-    }
-    else if (humanScore == computerScore) {
-        console.log("It's a draw!")
-    }
-    else {
-        console.log("Damn you lost!")
+    else if (computerScore == FINALSCORE) {
+        outcome.innerText = "The Computer wins!";
     }
 }
